@@ -6,7 +6,9 @@ ETL pipeline documentation for id304b covered entity (CE) data.
 
 + AWS Lambda
 + AWS RDS (PostgreSQL)
-+ AWS Step Functions
++ AWS Glue
++ AWS IAM
++ AWS S3
 + pgAdmin
 
 # Business Entities
