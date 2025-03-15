@@ -1,0 +1,37 @@
+# Install zlib and other necessary development packages
+sudo yum install -y zlib-devel
+
+# Now re-install Python 3.10 with all dependencies
+cd /opt
+sudo wget https://www.python.org/ftp/python/3.10.9/Python-3.10.9.tgz
+sudo tar xzf Python-3.10.9.tgz
+cd Python-3.10.9
+sudo ./configure --enable-optimizations
+sudo make altinstall
+
+# Verify the installation
+python3.10 --version
+
+# Install Python 3.10 from Amazon repository
+sudo amazon-linux-extras install python3.10
+
+# Install development tools
+sudo yum install -y python3.10-devel gcc postgresql-devel
+
+# Create directory for our package
+mkdir -p ~/package/python
+
+# Install psycopg2 directly
+pip3.10 install --target=~/package/python psycopg2-binary==2.9.9
+
+# Test the installation
+cd ~/package/python
+python3.10 -c "import psycopg2; print(psycopg2.__version__)"
+
+# Create the zip file
+cd ~/package
+zip -r psycopg2_glue5.zip python/
+
+# update the IAM role to have S3 write access
+
+aws s3 cp ~/package/psycopg2_glue5.zip s3://<my bucket>/glue-libs/
