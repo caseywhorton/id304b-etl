@@ -6,6 +6,12 @@ cd /opt
 sudo wget https://www.python.org/ftp/python/3.10.9/Python-3.10.9.tgz
 sudo tar xzf Python-3.10.9.tgz
 cd Python-3.10.9
+
+sudo yum groupinstall -y "Development Tools"
+sudo yum install -y gcc gcc-c++ make zlib-devel bzip2 bzip2-devel readline-devel \
+sqlite sqlite-devel openssl-devel libffi-devel
+
+
 sudo ./configure --enable-optimizations
 sudo make altinstall
 

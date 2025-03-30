@@ -1,7 +1,6 @@
 # id304b-etl
 ETL pipeline documentation for id304b covered entity (CE) data.
 
-
 # services
 
 + AWS Lambda
@@ -10,6 +9,13 @@ ETL pipeline documentation for id304b covered entity (CE) data.
 + AWS IAM
 + AWS S3
 + pgAdmin
++ AWS EC2
+
+# Set up
+
+Postgres Admin and VS Code for local testing.
+
+
 
 # Business Entities
 
@@ -29,6 +35,9 @@ Using this composite key, we can search for existing data and UPDATE instead of 
 Update the expiration date for the old record.
 
 # Source Data
+
+
+#
 
 # ETL Process
 
