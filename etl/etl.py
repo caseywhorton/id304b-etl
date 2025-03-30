@@ -10,14 +10,14 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-def process_dim_ce_contract_pharmacies(data, conn):
+def process_dim_ce_contract_pharmacies(data, conn, schema):
     try:
         id340b_value = data['id340B']
         ce_id_value = str(data['ceId'])
         contract_pharmacies = data['contractPharmacies']
 
-        check_sql = text("""
-            SELECT contract_id FROM local_dev.dim_ce_contract_pharmacy 
+        check_sql = text(f"""
+            SELECT contract_id FROM {schema}.dim_ce_contract_pharmacy 
             WHERE id340b = :id340b AND ce_id = :ce_id AND current_version_flg = 'Y'
         """)
         
@@ -28,8 +28,8 @@ def process_dim_ce_contract_pharmacies(data, conn):
         deleted_contracts = existing_contract_ids - incoming_contract_ids
 
         if deleted_contracts:
-            update_deleted_sql = text("""
-                UPDATE local_dev.dim_ce_contract_pharmacy
+            update_deleted_sql = text(f"""
+                UPDATE {schema}.dim_ce_contract_pharmacy
                 SET expiration_stp = CURRENT_TIMESTAMP, 
                     current_version_flg = 'N',
                     change_type = 'DELETE'
@@ -53,8 +53,8 @@ def process_dim_ce_contract_pharmacies(data, conn):
             address_zip = address.get('zip', 'N/A')
             phone_number = pharmacy.get('phoneNumber', 'N/A')
 
-            check_sql = text("""
-                SELECT * FROM local_dev.dim_ce_contract_pharmacy 
+            check_sql = text(f"""
+                SELECT * FROM {schema}.dim_ce_contract_pharmacy 
                 WHERE id340b = :id340b AND ce_id = :ce_id AND contract_id = :contract_id AND current_version_flg = 'Y'
             """)
 
@@ -66,8 +66,8 @@ def process_dim_ce_contract_pharmacies(data, conn):
             existing_record = result.fetchone()
 
             if existing_record is None:
-                insert_sql = text("""
-                    INSERT INTO local_dev.dim_ce_contract_pharmacy (
+                insert_sql = text(f"""
+                    INSERT INTO {schema}.dim_ce_contract_pharmacy (
                         id340b, ce_id, contract_id, pharmacy_id, name, address_line1, address_city, 
                         address_state, address_zip, phone_number, effective_stp, expiration_stp, 
                         current_version_flg, change_type
@@ -100,8 +100,8 @@ def process_dim_ce_contract_pharmacies(data, conn):
                     existing_record.name != name or 
                     existing_record.phone_number != phone_number):
 
-                    update_old_sql = text("""
-                        UPDATE local_dev.dim_ce_contract_pharmacy
+                    update_old_sql = text(f"""
+                        UPDATE {schema}.dim_ce_contract_pharmacy
                         SET expiration_stp = CURRENT_TIMESTAMP, 
                             current_version_flg = 'N'
                         WHERE id340b = :id340b AND ce_id = :ce_id AND contract_id = :contract_id AND current_version_flg = 'Y'
@@ -112,8 +112,8 @@ def process_dim_ce_contract_pharmacies(data, conn):
                         "contract_id": contract_id
                     })
 
-                    insert_new_sql = text("""
-                        INSERT INTO local_dev.dim_ce_contract_pharmacy (
+                    insert_new_sql = text(f"""
+                        INSERT INTO {schema}.dim_ce_contract_pharmacy (
                             id340b, ce_id, contract_id, pharmacy_id, name, address_line1, address_city, 
                             address_state, address_zip, phone_number, effective_stp, expiration_stp, 
                             current_version_flg, change_type
@@ -145,14 +145,14 @@ def process_dim_ce_contract_pharmacies(data, conn):
         logging.error(f"Error processing contract pharmacies: {e}")
 
 
-def process_dim_ce_medicaid(data, conn):
+def process_dim_ce_medicaid(data, conn, schema):
     logging.info("Processing Medicaid data.")
     id340b_value = data['id340B']
     ce_id_value = str(data['ceId'])
     medicaid_numbers = data['medicaidNumbers']
 
-    check_sql = text("""
-        SELECT medicaid_number, state FROM local_dev.dim_ce_medicaid 
+    check_sql = text(f"""
+        SELECT medicaid_number, state FROM {schema}.dim_ce_medicaid 
         WHERE id340b = :id340b AND ce_id = :ce_id AND current_version_flg = 'Y'
     """)
     try:
@@ -167,8 +167,8 @@ def process_dim_ce_medicaid(data, conn):
     deleted_medicaid = existing_medicaid_set - incoming_medicaid_set
 
     if deleted_medicaid:
-        update_deleted_sql = text("""
-            UPDATE local_dev.dim_ce_medicaid
+        update_deleted_sql = text(f"""
+            UPDATE {schema}.dim_ce_medicaid
             SET expiration_stp = CURRENT_TIMESTAMP, 
                 current_version_flg = 'N',
                 change_type = 'DELETE'
@@ -189,8 +189,8 @@ def process_dim_ce_medicaid(data, conn):
         medicaid_number = med['medicaidNumber']
         state = med.get('state', 'NA')
 
-        check_sql = text("""
-            SELECT * FROM local_dev.dim_ce_medicaid 
+        check_sql = text(f"""
+            SELECT * FROM {schema}.dim_ce_medicaid 
             WHERE id340b = :id340b AND ce_id = :ce_id 
             AND medicaid_number = :medicaid_number AND state = :state 
             AND current_version_flg = 'Y'
@@ -209,8 +209,8 @@ def process_dim_ce_medicaid(data, conn):
             continue
 
         if existing_record is None:
-            insert_sql = text("""
-                INSERT INTO local_dev.dim_ce_medicaid (
+            insert_sql = text(f"""
+                INSERT INTO {schema}.dim_ce_medicaid (
                     id340b, ce_id, medicaid_number, state, effective_stp, expiration_stp, 
                     current_version_flg, change_type
                 ) VALUES (
@@ -238,7 +238,7 @@ def process_dim_ce_medicaid(data, conn):
         logging.error(f"Error committing transaction: {e}")
 
 
-def process_dim_ce_npi(data, conn):
+def process_dim_ce_npi(data, conn, schema):
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
     try:
@@ -246,8 +246,8 @@ def process_dim_ce_npi(data, conn):
         ce_id_value = str(data['ceId'])
         npi_numbers = data.get('npiNumbers', [])
 
-        check_sql = text("""
-            SELECT npi, state FROM local_dev.dim_ce_npi 
+        check_sql = text(f"""
+            SELECT npi, state FROM {schema}.dim_ce_npi 
             WHERE id340b = :id340b AND ce_id = :ce_id AND current_version_flg = 'Y'
         """)
 
@@ -258,8 +258,8 @@ def process_dim_ce_npi(data, conn):
         deleted_npi = existing_npi_set - incoming_npi_set
 
         if deleted_npi:
-            update_deleted_sql = text("""
-                UPDATE local_dev.dim_ce_npi
+            update_deleted_sql = text(f"""
+                UPDATE {schema}.dim_ce_npi
                 SET expiration_stp = CURRENT_TIMESTAMP, 
                     current_version_flg = 'N',
                     change_type = 'DELETE'
@@ -277,8 +277,8 @@ def process_dim_ce_npi(data, conn):
             npi_value = npi['npiNumber']
             state = npi.get('state', 'NA')
 
-            check_sql = text("""
-                SELECT * FROM local_dev.dim_ce_npi 
+            check_sql = text(f"""
+                SELECT * FROM {schema}.dim_ce_npi 
                 WHERE id340b = :id340b AND ce_id = :ce_id 
                 AND npi = :npi AND state = :state 
                 AND current_version_flg = 'Y'
@@ -293,8 +293,8 @@ def process_dim_ce_npi(data, conn):
             existing_record = result.fetchone()
 
             if existing_record is None:
-                insert_sql = text("""
-                    INSERT INTO local_dev.dim_ce_npi (
+                insert_sql = text(f"""
+                    INSERT INTO {schema}.dim_ce_npi (
                         id340b, ce_id, npi, state, effective_stp, expiration_stp, 
                         current_version_flg, change_type
                     ) VALUES (
@@ -319,7 +319,7 @@ def process_dim_ce_npi(data, conn):
         conn.rollback()
 
 
-def process_dim_ce_street_address(data, conn):
+def process_dim_ce_street_address(data, conn, schema):
     """Updates or inserts a record in the dim_ce_street_address table."""
     id340b_value = data["id340B"]
     ce_id = str(data["ceId"])
@@ -331,8 +331,8 @@ def process_dim_ce_street_address(data, conn):
     state = data["streetAddress"]["state"]
     zip_code = data["streetAddress"]["zip"]
 
-    check_sql = text("""
-        SELECT * FROM local_dev.dim_ce_street_address 
+    check_sql = text(f"""
+        SELECT * FROM {schema}.dim_ce_street_address 
         WHERE id340b = :id340b AND ce_id = :ce_id AND current_version_flg = 'Y'
     """)
 
@@ -341,8 +341,8 @@ def process_dim_ce_street_address(data, conn):
 
     if existing_record is None:
         # INSERT - New record
-        insert_sql = text("""
-            INSERT INTO local_dev.dim_ce_street_address (
+        insert_sql = text(f"""
+            INSERT INTO {schema}.dim_ce_street_address (
                 id340b, ce_id, address_line1, address_line2, city, state, zip, 
                 effective_stp, expiration_stp, current_version_flg, change_type
             ) VALUES (
@@ -369,8 +369,8 @@ def process_dim_ce_street_address(data, conn):
             existing_record.state != state or 
             existing_record.zip != zip_code):
 
-            update_old_sql = text("""
-                UPDATE local_dev.dim_ce_street_address
+            update_old_sql = text(f"""
+                UPDATE {schema}.dim_ce_street_address
                 SET expiration_stp = CURRENT_TIMESTAMP, 
                     current_version_flg = 'N'
                 WHERE id340b = :id340b AND ce_id = :ce_id AND current_version_flg = 'Y'
@@ -378,8 +378,8 @@ def process_dim_ce_street_address(data, conn):
 
             conn.execute(update_old_sql, {"id340b": id340b_value, "ce_id": ce_id})
 
-            insert_new_sql = text("""
-                INSERT INTO local_dev.dim_ce_street_address (
+            insert_new_sql = text(f"""
+                INSERT INTO {schema}.dim_ce_street_address (
                     id340b, ce_id, address_line1, address_line2, city, state, zip, 
                     effective_stp, expiration_stp, current_version_flg, change_type
                 ) VALUES (
@@ -404,7 +404,7 @@ def process_dim_ce_street_address(data, conn):
     conn.commit()
 
 
-def process_dim_ce_billing_address(data, conn):
+def process_dim_ce_billing_address(data, conn, schema):
     """
     Processes and inserts/updates the billing address record in the dim_ce_billing_address table.
 
@@ -430,9 +430,9 @@ def process_dim_ce_billing_address(data, conn):
     zip_code = billing_address.get("zip", "N/A")
 
     # SQL to check if the record exists
-    check_sql = text("""
+    check_sql = text(f"""
         SELECT organization, address_line1, address_line2, city, state, zip 
-        FROM local_dev.dim_ce_billing_address 
+        FROM {schema}.dim_ce_billing_address 
         WHERE id340b = :id340b AND ce_id = :ce_id AND current_version_flg = 'Y'
     """)
 
@@ -441,8 +441,8 @@ def process_dim_ce_billing_address(data, conn):
 
     if existing_record is None:
         # New record insertion
-        insert_sql = text("""
-            INSERT INTO local_dev.dim_ce_billing_address (
+        insert_sql = text(f"""
+            INSERT INTO {schema}.dim_ce_billing_address (
                 id340b, ce_id, organization, address_line1, address_line2, city, state, zip, 
                 effective_stp, expiration_stp, current_version_flg, change_type
             ) VALUES (
@@ -474,8 +474,8 @@ def process_dim_ce_billing_address(data, conn):
             existing_record.zip != zip_code):
 
             # Expire the current record
-            update_old_sql = text("""
-                UPDATE local_dev.dim_ce_billing_address
+            update_old_sql = text(f"""
+                UPDATE {schema}.dim_ce_billing_address
                 SET expiration_stp = CURRENT_TIMESTAMP, 
                     current_version_flg = 'N'
                 WHERE id340b = :id340b AND ce_id = :ce_id AND current_version_flg = 'Y'
@@ -484,8 +484,8 @@ def process_dim_ce_billing_address(data, conn):
             conn.execute(update_old_sql, {"id340b": id340b_value, "ce_id": ce_id_value})
 
             # Insert new version of the record
-            insert_new_sql = text("""
-                INSERT INTO local_dev.dim_ce_billing_address (
+            insert_new_sql = text(f"""
+                INSERT INTO {schema}.dim_ce_billing_address (
                     id340b, ce_id, organization, address_line1, address_line2, city, state, zip, 
                     effective_stp, expiration_stp, current_version_flg, change_type
                 ) VALUES (
@@ -512,7 +512,7 @@ def process_dim_ce_billing_address(data, conn):
     conn.commit()
 
 
-def process_dim_ce_shipping_address(data, conn):
+def process_dim_ce_shipping_address(data, conn, schema):
     """
     Processes and updates the shipping addresses in the dim_ce_shipping_address table.
 
@@ -535,9 +535,9 @@ def process_dim_ce_shipping_address(data, conn):
     }
 
     # Fetch existing records from DB
-    check_sql = text("""
+    check_sql = text(f"""
         SELECT address_line1, city, state, zip, is_340b_street_address_flg
-        FROM local_dev.dim_ce_shipping_address 
+        FROM {schema}.dim_ce_shipping_address 
         WHERE id340b = :id340b AND ce_id = :ce_id AND current_version_flg = 'Y'
     """)
 
@@ -552,8 +552,8 @@ def process_dim_ce_shipping_address(data, conn):
 
     # Mark removed addresses as inactive
     for addr in addresses_to_delete:
-        update_old_sql = text("""
-            UPDATE local_dev.dim_ce_shipping_address
+        update_old_sql = text(f"""
+            UPDATE {schema}.dim_ce_shipping_address
             SET expiration_stp = CURRENT_TIMESTAMP, 
                 current_version_flg = 'N', 
                 change_type = 'DELETE'
@@ -568,8 +568,8 @@ def process_dim_ce_shipping_address(data, conn):
 
     # Insert new addresses
     for addr in addresses_to_insert:
-        insert_sql = text("""
-            INSERT INTO local_dev.dim_ce_shipping_address (
+        insert_sql = text(f"""
+            INSERT INTO {schema}.dim_ce_shipping_address (
                 id340b, ce_id, is_340b_street_address_flg, address_line1, city, state, zip, 
                 effective_stp, expiration_stp, current_version_flg, change_type
             ) VALUES (
@@ -588,7 +588,7 @@ def process_dim_ce_shipping_address(data, conn):
     logger.info("Shipping addresses processed successfully.")
 
 
-def process_dim_ce(data, conn):
+def process_dim_ce(data, conn, schema):
     try:
         # Safely extract values with default handling
         params = {
@@ -615,8 +615,8 @@ def process_dim_ce(data, conn):
         }
 
         # Define insert_sql outside of conditional blocks
-        insert_sql = text("""
-            INSERT INTO local_dev.dim_ce (
+        insert_sql = text(f"""
+            INSERT INTO {schema}.dim_ce (
                 id340b, ce_id, name, subname, participating_flg, 
                 participating_start_stp, 
                 grant_number, cert_decert_stp, edit_stp, auth_official_name, 
@@ -640,8 +640,8 @@ def process_dim_ce(data, conn):
         """)
 
         # Check existing record
-        check_sql = text("""
-            SELECT * FROM local_dev.dim_ce
+        check_sql = text(f"""
+            SELECT * FROM {schema}.dim_ce
             WHERE id340b = :id340b AND ce_id = :ce_id AND current_version_flg = 'Y'
         """)
         result = conn.execute(check_sql, params)
@@ -661,8 +661,8 @@ def process_dim_ce(data, conn):
                 existing_record.auth_official_name != params['auth_official_name'],
                 existing_record.primary_contact_name != params['primary_contact_name']
             ]):
-                update_old_sql = text("""
-                    UPDATE local_dev.dim_ce
+                update_old_sql = text(f"""
+                    UPDATE {schema}.dim_ce
                     SET expiration_stp = CURRENT_TIMESTAMP, 
                         current_version_flg = 'N'
                     WHERE id340b = :id340b AND ce_id = :ce_id AND current_version_flg = 'Y'

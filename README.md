@@ -8,8 +8,10 @@ ETL pipeline documentation for id304b covered entity (CE) data.
 + AWS Glue
 + AWS IAM
 + AWS S3
+    + VPC Endpoint
 + pgAdmin
 + AWS EC2
+
 
 # Set up
 
