@@ -84,6 +84,7 @@ This project implements an automated ETL pipeline that processes covered entity 
 ### Data Source
 - Daily JSON files containing covered entity information
 - Files uploaded to designated S3 bucket (`and-health-bucket`)
+- Data is sourced from the [HRSA 340B OPAIS Daily Reports](https://340bopais.hrsa.gov/help/Reports/DailyReports.htm)
 
 ### Process Flow
 1. New JSON file uploaded to S3 bucket
