@@ -1,6 +1,6 @@
-DROP TABLE IF EXISTS local_dev.dim_pharmacy;
+DROP TABLE IF EXISTS prod.dim_pharmacy;
 
-CREATE TABLE local_dev.dim_pharmacy (
+CREATE TABLE prod.dim_pharmacy (
     pharmacy_id VARCHAR(50) NOT NULL,
     address_line1 VARCHAR(100) NOT NULL,
     address_city VARCHAR(50) NOT NULL,

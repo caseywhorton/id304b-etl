@@ -1,6 +1,6 @@
-DROP TABLE IF EXISTS local_dev.dim_ce_billing_address;
+DROP TABLE IF EXISTS prod.dim_ce_billing_address;
 
-CREATE TABLE local_dev.dim_ce_billing_address (
+CREATE TABLE prod.dim_ce_billing_address (
     id340b VARCHAR(50) NOT NULL,
     ce_id VARCHAR(50) NOT NULL,
     organization VARCHAR(100) NOT NULL DEFAULT 'N/A',

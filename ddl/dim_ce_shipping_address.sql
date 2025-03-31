@@ -1,6 +1,6 @@
-DROP TABLE IF EXISTS local_dev.dim_ce_shipping_address;
+DROP TABLE IF EXISTS prod.dim_ce_shipping_address;
 
-CREATE TABLE local_dev.dim_ce_shipping_address (
+CREATE TABLE prod.dim_ce_shipping_address (
     id340b VARCHAR(50) NOT NULL,
     ce_id VARCHAR(50) NOT NULL,
     is_340b_street_address_flg CHAR(1) NOT NULL DEFAULT 'Y',

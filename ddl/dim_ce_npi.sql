@@ -1,6 +1,6 @@
-DROP TABLE IF EXISTS local_dev.dim_ce_npi;
+DROP TABLE IF EXISTS prod.dim_ce_npi;
 
-CREATE TABLE local_dev.dim_ce_npi (
+CREATE TABLE prod.dim_ce_npi (
     id340b VARCHAR(50) NOT NULL,
     ce_id VARCHAR(50) NOT NULL,
     npi VARCHAR(50) NOT NULL DEFAULT 'N/A',

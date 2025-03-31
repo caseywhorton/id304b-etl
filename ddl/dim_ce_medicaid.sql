@@ -1,6 +1,6 @@
-DROP TABLE IF EXISTS local_dev.dim_ce_medicaid;
+DROP TABLE IF EXISTS prod.dim_ce_medicaid;
 
-CREATE TABLE local_dev.dim_ce_medicaid (
+CREATE TABLE prod.dim_ce_medicaid (
     id340b VARCHAR(50) NOT NULL,
     ce_id VARCHAR(50) NOT NULL,
     medicaid_number VARCHAR(50) NOT NULL DEFAULT 'N/A',

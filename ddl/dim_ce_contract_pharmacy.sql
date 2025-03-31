@@ -1,6 +1,6 @@
-DROP TABLE IF EXISTS local_dev.dim_ce_contract_pharmacy;
+DROP TABLE IF EXISTS prod.dim_ce_contract_pharmacy;
 
-CREATE TABLE local_dev.dim_ce_contract_pharmacy (
+CREATE TABLE prod.dim_ce_contract_pharmacy (
     id340b VARCHAR(50) NOT NULL,
     ce_id VARCHAR(50) NOT NULL,
     contract_id VARCHAR(50) NOT NULL DEFAULT 'N/A',

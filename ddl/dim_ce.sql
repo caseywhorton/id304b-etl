@@ -1,6 +1,6 @@
-DROP TABLE IF EXISTS local_dev.dim_ce;
+DROP TABLE IF EXISTS prod.dim_ce;
 
-CREATE TABLE local_dev.dim_ce (
+CREATE TABLE prod.dim_ce (
     id340b VARCHAR(50) NOT NULL,
     ce_id VARCHAR(50) NOT NULL,
     name VARCHAR(100) NOT NULL,
