@@ -64,8 +64,6 @@ This project implements an automated ETL pipeline that processes covered entity 
     ```
   - External libraries required for Glue job:
     - s3://my-dependencies-cw/glue-libs/pg8000.zip
-    - s3://my-dependencies-cw/glue-libs/psycopg2-3.9.zip
-    - s3://my-dependencies-cw/glue-libs/psycopg2-3.11.zip
     - s3://my-dependencies-cw/sqlalchemy.zip
     - s3://my-dependencies-cw/etl.zip
 
