@@ -1,6 +1,12 @@
 # ID304B-ETL
 
-ETL pipeline documentation for ID304B covered entity (CE) data automation.
+Every day, a publicly available website publishes data on covered entities. This data is very useful for describing the covered entities, their contact information and what medicaid and NPI numbers align with them. The data is slowly changing, so capturing changes is important.  
+
+The covered entity data comes in JSON format, with described elements being saved in the nested JSON. Parsing the data takes time, with the number of nested documents changing for every covered entity. Fortunately, there is a reliable format for each covered entity so we can design a set of business entities that describe the covered entity and then take pieces of the JSON document and write them to the business entity.
+
+The JSON documents are around 200 MB, and there is some logically checking against the data we already have to do the change data capture.
+
+I wanted to create a fully automated pipeline that gets the data on a daily basis and load the parsed version into a database. What this repo shows is the automation from the point of the JSON document being saved into AWS S3 (object storage). I use a set of AWS services along with triggers to automate the pipeline from there, and have tested both the relational database logic locally and the automation logic on AWS using samples of the JSON data.
 
 ## Architecture Overview
 
