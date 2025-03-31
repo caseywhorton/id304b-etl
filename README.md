@@ -173,3 +173,14 @@ AWS Secrets Manager is used to securely store and retrieve database credentials,
   - Verify S3 bucket has EventBridge notifications enabled
   - Check EventBridge rule pattern matches the exact bucket name
   - Ensure Lambda has appropriate permissions to be invoked by EventBridge
+
+## Repository Structure
+
+- **etl.py**: A Python module that parses JSON files and handles change data capture.
+- **modules/**: Contains all the zipped modules required for AWS Glue, including:
+  - `etl.zip`
+  - `pg8000.zip`
+  - `psycopg2.zip`
+- **ddl/**: Contains the database schema definition scripts. Each file corresponds to a business entity.
+- **ID304B/**: Contains the AWS Glue job script:
+  - `ID304B-ETL.py`: The main Glue job script used for data processing.
