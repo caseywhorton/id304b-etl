@@ -166,6 +166,7 @@ AWS Secrets Manager is used to securely store and retrieve database credentials,
 ### Common Issues and Solutions
 
 - **Service Connectivity Issues**: Confirm that all services are in the same VPC. Some services require internet access via NAT Gateway or appropriate VPC endpoints.
+- Verify you have a S3 VPC endpoint if you are using AWS Glue in a private VPC. Please note that I believe the service does have a charge, so I clean up (delete) that resource when not being used.
 
 - **Python Module Import Errors**: When working with non-native Python modules in AWS Glue:
   - Verify the Python version used by Glue (currently Python 3.9)
