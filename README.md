@@ -6,7 +6,7 @@ ETL pipeline documentation for ID304B covered entity (CE) data automation.
 
 This project implements an automated ETL pipeline that processes covered entity data from S3 and loads it into a PostgreSQL database using AWS services.
 
-![Architecture Diagram (placeholder)]
+![Alt text](images/id304b.jpg)
 
 ## AWS Services
 
