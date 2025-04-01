@@ -65,7 +65,10 @@ if not covered_entities:
     sys.exit(0)
 
 # Process each document in 'coveredEntities'
-for entity in covered_entities[0:2000]:
+# note: a slice of the covered_entities is taken for testing purposes
+# i.e. covered_entities[0:100]
+# users need to change this for a complete data load
+for entity in covered_entities:
     try:
         process_dim_ce_contract_pharmacies(entity, conn, "prod")
         process_dim_ce_medicaid(entity, conn, "prod")
