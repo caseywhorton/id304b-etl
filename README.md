@@ -71,9 +71,9 @@ This project implements an automated ETL pipeline that processes covered entity 
     zip -r pg8000.zip .
     ```
   - External libraries required for Glue job:
-    - s3://my-dependencies-cw/glue-libs/pg8000.zip
-    - s3://my-dependencies-cw/sqlalchemy.zip
-    - s3://my-dependencies-cw/etl.zip
+    - s3://.../pg8000.zip
+    - s3://.../sqlalchemy.zip
+    - s3://.../etl.zip
 
 ## Data Model
 
@@ -120,16 +120,20 @@ This project implements an automated ETL pipeline that processes covered entity 
 - Records searched and updated based on composite key
 - Expiration date set for old records during updates
 - "Current version" flag set to "Y" for active records and "N" for historical/expired records
+- Records that are expected to appear for a business entity that do not appear have a current state set to 'DELETED'
+- New records have a current state of 'INSERT', while changing records are set to 'UPDATE'
 
 ## Deployment and Configuration
 
 ### EventBridge Setup
 - Event pattern configured to detect S3 object creation
 - Target configured to invoke Lambda function
+- (Ensure the S3 bucket has event bridge notifications enabled)
 
 ### Lambda Function
 - Extracts S3 bucket and object information
 - Passes parameters to Glue job
+- (Ensure the Lambda function's role has permission to invoke Glue and read from S3)
 
 ### Glue Job Setup
 - Job parameters:
@@ -148,6 +152,9 @@ This project implements an automated ETL pipeline that processes covered entity 
 - CPU utilization for Glue job
 - RDS instance CPU utilization and connection count
 - Custom metrics for record counts and processing time
+
+## Amazon RDS
+- Connections and CPU usage monitoring is available on the RDS dashboard
 
 ## Security Considerations
 
