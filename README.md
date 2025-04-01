@@ -4,11 +4,11 @@ Every day, a publicly available website publishes data on covered entities. This
 
 The covered entity data comes in JSON format, with described elements being saved in the nested JSON. Parsing the data takes time, with the number of nested documents changing for every covered entity. Fortunately, there is a reliable format for each covered entity so we can design a set of business entities that describe the covered entity and then take pieces of the JSON document and write them to the business entity.
 
-The JSON documents are around 200 MB, and there is some logically checking against the data we already have to do the change data capture.
+The JSON documents are around 200 MB, and there is some logical checking against the data we already have to do for the change data capture.
 
 I wanted to create a fully automated pipeline that gets the data on a daily basis and load the parsed version into a database. What this repo shows is the automation from the point of the JSON document being saved into AWS S3 (object storage). I use a set of AWS services along with triggers to automate the pipeline from there, and have tested both the relational database logic locally and the automation logic on AWS using samples of the JSON data. A final piece to scrape the website for the JSON is still outstanding.
 
-Readers that want to duplicate the pipeline can use the saved code for the connected AWS services. You will need to configure the IAM roles of services and VPC settings based on your environment, and I have added a troubleshooting section to help in those situations.
+Readers that want to duplicate the pipeline can use the saved code for the connected AWS services. You will need to configure the IAM roles of services and VPC settings based on your environment. I have added a troubleshooting section to help in those situations.
 
 ## Architecture Overview
 
